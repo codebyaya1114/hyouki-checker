@@ -75,6 +75,7 @@ if st.button("チェック"):
 
     # 万以上の数字に漢数字チェック（重複防止付き・混在も拾う）
     man_issues = set()
+    digit_issues = set()  # ←これを追加！！
     already_flagged = set()
 
     for match in re.finditer(r'[0-9０-９]+万', text_input):
