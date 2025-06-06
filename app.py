@@ -45,35 +45,45 @@ if st.button("チェック"):
         highlighted = text_input
 
                 # 数字のルールチェック（1桁は全角、2桁以上は半角）
-        digit_issues = []
-        for match in re.finditer(r'\d+', text_input):
-            num = match.group()
-            # 1桁：半角なら注意（全角ならOK）
-            if len(num) == 1:
-                if num in "0123456789":  # 半角1桁はNG
-                    digit_issues.append(f"1桁の数字「{num}」は全角が望ましいです。")
-            # 2桁以上：全角が混ざっていたらNG
-            elif len(num) >= 2 and any(c in "０１２３４５６７８９" for c in num):
-                digit_issues.append(f"2桁以上の数字「{num}」は半角が望ましいです。")
+    digit_issues = set()
+    for match in re.finditer(r'\d+', text_input):
+        num = match.group()
+        if len(num) == 1:
+            if num in "0123456789":
+                digit_issues.add(f"1桁の数字「{num}」は全角が望ましいです。")
+        elif len(num) >= 2 and any(c in "０１２３４５６７８９" for c in num):
+            digit_issues.add(f"2桁以上の数字「{num}」は半角が望ましいです。")
 
 
 
 
 
-        # 万以上の数字に漢数字チェック
-    man_issues = []
+
+
+    # 万以上の数字に漢数字チェック
+    man_issues = set()
     for match in re.finditer(r'[0-9０-９]+万', text_input):
-        num = match.group(0)
-        print("【ヒット確認】num =", num)  # ←これがツッコミ検証ログ！
+        num = match.group()
+
+        # 全角・半角の混在をチェック
+        has_zenkaku = any(c in "０１２３４５６７８９" for c in num)
+        has_hankaku = any(c in "0123456789" for c in num)
+        if has_zenkaku and has_hankaku:
+            man_issues.add(f"{num} は全角と半角が混在しています。表記を統一してください。")
+            continue
+
+        # 漢数字の例を表示（単なるガイド）
         example = "三万" if num in ["3万", "３万"] else "十二万"
-        man_issues.append(f"{num}は漢数字での表記（例：{example}）が望ましいです。")
+        man_issues.add(f"{num}は漢数字での表記（例：{example}）が望ましいです。")
+
 
 
 
         if digit_issues or man_issues:
             st.markdown("### ⚠️ 数字表記ルールの指摘")
-            for issue in digit_issues + man_issues:
-                st.warning(issue)
+    for issue in digit_issues | man_issues:
+        st.warning(issue)
+
 
 
 
