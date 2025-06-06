@@ -56,10 +56,6 @@ if st.button("チェック"):
             elif len(num) >= 2 and any(c in "０１２３４５６７８９" for c in num):
                 digit_issues.append(f"2桁以上の数字「{num}」は半角が望ましいです。")
 
-        man_issues = []
-        for match in re.finditer(r'\d{5,}', text_input):  # 5桁以上だけチェック
-            man_issues.append(f"{match.group(0)}は漢数字での表記（例：十万）が望ましいです。")
-
 
 
 man_issues = []
