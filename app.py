@@ -30,11 +30,8 @@ exceptions = {
     "方": "方角を表す場合は漢字、比較の場合はひらがなが望ましいです。"
 }
 
-# -----------------------------
-# UI
-# -----------------------------
 st.title("表記ゆれチェックツール")
-st.write("文章を下のボックスに貼り付けて、表記のゆれをチェックしましょう。")
+st.write("文章を下のボックスに貼り付けて、表記のゆれ・数字表記・注意語をチェックしましょう。")
 
 text_input = st.text_area("文章を入力：", height=300)
 
@@ -44,29 +41,12 @@ if st.button("チェック"):
     else:
         hits = []
         highlighted = text_input
-        
-        # 数字のルールチェック（1桁は全角、2桁以上は半角）
-        digit_issues = []
-        for match in re.finditer(r'\d+', text_input):
-            num = match.group()
-            if len(num) == 1:
-                digit_issues.append(f"1桁の数字「{num}」は全角が望ましいです。")
-            elif len(num) >= 2 and any(c in "０１２３４５６７８９" for c in num):
-                digit_issues.append(f"2桁以上の数字「{num}」は半角が望ましいです。")
 
-        # 万以上の数字に漢数字チェック
-        man_issues = []
-        for match in re.finditer(r'\d+万', text_input):
-            man_issues.append(f"「{match.group()}」は漢数字での表記（例：十万）が望ましいです。")
-       
-        
-        
-        
-
+        # 表記ゆれチェック
         for wrong, correct in conversion_list:
             if wrong in text_input:
                 hits.append((wrong, correct))
-                highlighted = re.sub(f"({re.escape(wrong)})", r"<mark>\\1</mark>", highlighted)
+                highlighted = re.sub(f"({re.escape(wrong)})", r"<mark>\1</mark>", highlighted)
 
         st.markdown("### 🔍 ハイライト結果")
         st.markdown(highlighted, unsafe_allow_html=True)
@@ -77,16 +57,6 @@ if st.button("チェック"):
             st.dataframe(df, use_container_width=True)
         else:
             st.success("表記ゆれは見つかりませんでした！")
-            
-# 数字ルールの警告表示
-if digit_issues or man_issues:
-    st.markdown("### ⚠️ 数字ルールの指摘")
-    for msg in digit_issues + man_issues:
-        st.warning(msg)
 
-# ✅ ここからインデントを戻す！
-# 例外語の注意喚起
-st.markdown("### ⚠️ 注意が必要な語")
-for word, note in exceptions.items():
-    if word in text_input:
-        st.warning(f"『{word}』が含まれています：{note}")
+        # 数字ルールチェック
+        digit_is_
