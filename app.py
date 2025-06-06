@@ -45,13 +45,21 @@ if st.button("チェック"):
         highlighted = text_input
 
                 # 数字のルールチェック（1桁は全角、2桁以上は半角）
-        digit_issues = []
-        for match in re.finditer(r'\d+', text_input):
-            num = match.group()
-            if len(num) == 1:
-                digit_issues.append(f"1桁の数字「{num}」は全角が望ましいです。")
-            elif len(num) >= 2 and any(c in "０１２３４５６７８９" for c in num):
-                digit_issues.append(f"2桁以上の数字「{num}」は半角が望ましいです。")
+digit_issues = []
+for match in re.finditer(r'\d+', text_input):
+    num = match.group()
+    # 1桁 → 半角なら注意（全角ならOK）
+    if len(num) == 1:
+        if num in "0123456789":  # 半角1桁はNG
+            digit_issues.append(f"1桁の数字「{num}」は全角が望ましいです。")
+    # 2桁以上 → 全角が混ざってたらNG
+    elif len(num) >= 2 and any(c in "０１２３４５６７８９" for c in num):
+        digit_issues.append(f"2桁以上の数字「{num}」は半角が望ましいです。")
+
+man_issues = []
+for match in re.finditer(r'\d{5,}', text_input):  # 5桁以上だけチェック
+    man_issues.append(f"{match.group(0)}は漢数字での表記（例：十万）が望ましいです。")
+
 
         # 万以上の数字に漢数字チェック
         man_issues = []
