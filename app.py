@@ -59,4 +59,30 @@ if st.button("チェック"):
             st.success("表記ゆれは見つかりませんでした！")
 
         # 数字ルールチェック
-     
+        digit_issues = []
+        man_digit_issues = []
+
+        # 1桁は全角、2桁以上は半角
+        for match in re.finditer(r'\d+', text_input):
+            num = match.group()
+            if len(num) == 1:
+                digit_issues.append(f"1桁の数字「{num}」は全角が望ましいです。")
+            elif len(num) >= 2 and any(c in "０１２３４５６７８９" for c in num):
+                digit_issues.append(f"2桁以上の数字「{num}」は半角が望ましいです。")
+
+        # 万以上の数は漢数字が望ましい
+        for match in re.finditer(r'(\d+)万([０-９\d]{1,4})', text_input):
+            man = match.group()
+            if re.match(r'\d+', match.group(1)):
+                man_digit_issues.append(f"「{man}」の『{match.group(1)}万』は漢数字での表記（例：十六万）が望ましいです。")
+
+        if digit_issues or man_digit_issues:
+            st.markdown("### ⚠️ 数字ルールの指摘")
+            for msg in digit_issues + man_digit_issues:
+                st.warning(msg)
+
+        # 例外語チェック
+        st.markdown("### ⚠️ 注意が必要な語")
+        for word, note in exceptions.items():
+            if word in text_input:
+                st.warning(f"『{word}』が含まれています：{note}")
