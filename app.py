@@ -101,10 +101,12 @@ if st.button("チェック"):
 
 
 
-        if digit_issues or man_issues:
-            st.markdown("### ⚠️ 数字表記ルールの指摘")
-    for issue in digit_issues | man_issues:
-        st.warning(issue)
+    # 表記ルール指摘があれば、一覧としてまとめて表示
+    if digit_issues or man_issues:
+        st.markdown("### ⚠️ 数字表記ルールの指摘")
+        for issue in sorted(digit_issues | man_issues):
+            st.markdown(f"- {issue}")
+
 
 
 
