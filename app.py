@@ -58,7 +58,8 @@ if st.button("チェック"):
 
         man_issues = []
         for match in re.finditer(r'\d{5,}', text_input):  # 5桁以上だけチェック
-            man_issues.append(f"{match.group(0)}は漢数字での表記（例：十万）が望ましいです。")
+            man_issues.append(f"{match.group(0)}は漢数字での表記（例：十二万）が望ましいです。")
+
 
 
 
