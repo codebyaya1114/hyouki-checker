@@ -29,7 +29,6 @@ exceptions = {
     "時": "名詞としての『時』は漢字が適切な場合があります。",
     "方": "方角を表す場合は漢字、比較の場合はひらがなが望ましいです。"
 }
-
 # -----------------------------
 # UI
 # -----------------------------
@@ -45,19 +44,72 @@ if st.button("チェック"):
         hits = []
         highlighted = text_input
 
-                # 数字のルールチェック（1桁は全角、2桁以上は半角）
-        digit_issues = []
-        for match in re.finditer(r'\d+', text_input):
-            num = match.group()
-            if len(num) == 1:
-                digit_issues.append(f"1桁の数字「{num}」は全角が望ましいです。")
-            elif len(num) >= 2 and any(c in "０１２３４５６７８９" for c in num):
-                digit_issues.append(f"2桁以上の数字「{num}」は半角が望ましいです。")
+    # 万以上の数字に漢数字チェック（重複防止付き・混在も拾う）
+    man_issues = set()
+    already_flagged = set()
 
-        # 万以上の数字に漢数字チェック
-        man_issues = []
-        for match in re.finditer(r'\d+万', text_input):
-            man_issues.append(f"「{match.group()}」は漢数字での表記（例：十万）が望ましいです。")
+    for match in re.finditer(r'[0-9０-９]+万', text_input):
+        start, end = match.start(), match.end()
+        if (start, end) in already_flagged:
+            continue  # すでにチェック済み
+
+        already_flagged.add((start, end))
+        num = match.group()
+
+        # 全角と半角の混在チェック
+        has_zenkaku = any(c in "０１２３４５６７８９" for c in num)
+        has_hankaku = any(c in "0123456789" for c in num)
+        if has_zenkaku and has_hankaku:
+            man_issues.add(f"「{num}」は全角と半角が混在しています。表記を統一してください。")
+            continue
+
+        # ガイドの表示（3万 or 12万）
+        example = "三万" if num in ["3万", "３万"] else "十二万"
+        man_issues.add(f"「{num}」は漢数字での表記（例：{example}）が望ましいです。")
+
+
+
+
+
+
+
+    # 万以上の数字に漢数字チェック（重複防止付き・混在も拾う）
+    man_issues = set()
+    digit_issues = set()  # ←これを追加！！
+    already_flagged = set()
+
+    for match in re.finditer(r'[0-9０-９]+万', text_input):
+        start, end = match.start(), match.end()
+        if (start, end) in already_flagged:
+            continue  # すでにチェック済み
+
+        already_flagged.add((start, end))
+        num = match.group()
+
+        # 全角と半角の混在チェック
+        has_zenkaku = any(c in "０１２３４５６７８９" for c in num)
+        has_hankaku = any(c in "0123456789" for c in num)
+        if has_zenkaku and has_hankaku:
+            man_issues.add(f"「{num}」は全角と半角が混在しています。表記を統一してください。")
+            continue
+
+        # ガイドの表示（3万 or 12万）
+        example = "三万" if num in ["3万", "３万"] else "十二万"
+        man_issues.add(f"「{num}」は漢数字での表記（例：{example}）が望ましいです。")
+
+
+
+
+
+    # 表記ルール指摘があれば、一覧としてまとめて表示
+    if digit_issues or man_issues:
+        st.markdown("### ⚠️ 数字表記ルールの指摘")
+        for issue in sorted(digit_issues | man_issues):
+            st.markdown(f"- {issue}")
+
+
+
+
 
 
         for wrong, correct in conversion_list:
@@ -75,15 +127,9 @@ if st.button("チェック"):
         else:
             st.success("表記ゆれは見つかりませんでした！")
 
-        # 数字ルールの警告表示
-if digit_issues or man_issues:
-    st.markdown("### ⚠️ 数字ルールの指摘")
-    for msg in digit_issues + man_issues:
-        st.warning(msg)
-
-
         # 例外語の注意喚起
         st.markdown("### ⚠️ 注意が必要な語")
         for word, note in exceptions.items():
             if word in text_input:
                 st.warning(f"『{word}』が含まれています：{note}")
+
