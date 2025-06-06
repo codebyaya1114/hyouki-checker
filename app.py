@@ -59,4 +59,4 @@ if st.button("チェック"):
             st.success("表記ゆれは見つかりませんでした！")
 
         # 数字ルールチェック
-        digit_is_
+     
