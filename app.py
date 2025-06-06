@@ -68,9 +68,10 @@ if st.button("チェック"):
             man_issues.append(f"「{match.group()}」は漢数字での表記（例：十万）が望ましいです。")
 
         if digit_issues or man_issues:
-    st.markdown("### ⚠️ 数字表記ルールの指摘")
-    for issue in digit_issues + man_issues:
-        st.warning(issue)
+            st.markdown("### ⚠️ 数字表記ルールの指摘")
+            for issue in digit_issues + man_issues:
+                st.warning(issue)
+
 
 
 
