@@ -62,8 +62,6 @@ if st.button("チェック"):
         digit_issues = []
         man_digit_issues = []
 
-        digit_issues = []
-man_digit_issues = []
 
 # ⬇ ここから追加！OK！
 wrong_big_numbers = []
