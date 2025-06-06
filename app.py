@@ -61,9 +61,12 @@ if st.button("チェック"):
 
 
         # 万以上の数字に漢数字チェック
-        man_issues = []
-        for match in re.finditer(r'\d+万', text_input):
-            man_issues.append(f"{match.group(0)}は漢数字での表記（例：十二万）が望ましいです。")
+　　　　man_issues = []
+　　　　for match in re.finditer(r'\d+万', text_input):
+ 　　　　   num = match.group(0)
+  　　　　  example = "三万" if num == "3万" else "十二万"
+   　　　　 man_issues.append(f"{num}は漢数字での表記（例：{example}）が望ましいです。")
+
 
 
         if digit_issues or man_issues:
