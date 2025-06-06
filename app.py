@@ -64,9 +64,10 @@ if st.button("チェック"):
     man_issues = []
     for match in re.finditer(r'[0-9０-９]+万', text_input):
         num = match.group(0)
+        print("【ヒット確認】num =", num)  # ←これがツッコミ検証ログ！
         example = "三万" if num in ["3万", "３万"] else "十二万"
         man_issues.append(f"{num}は漢数字での表記（例：{example}）が望ましいです。")
-  
+
 
 
         if digit_issues or man_issues:
