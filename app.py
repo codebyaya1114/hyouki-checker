@@ -44,6 +44,27 @@ if st.button("チェック"):
         hits = []
         highlighted = text_input
 
+                # 数字のルールチェック（1桁は全角、2桁以上は半角）
+        digit_issues = []
+        for match in re.finditer(r'\d+', text_input):
+            num = match.group()
+            if len(num) == 1:
+                digit_issues.append(f"1桁の数字「{num}」は全角が望ましいです。")
+            elif len(num) >= 2 and any(c in "０１２３４５６７８９" for c in num):
+                digit_issues.append(f"2桁以上の数字「{num}」は半角が望ましいです。")
+
+        # 万以上の数字に漢数字チェック
+        man_issues = []
+        for match in re.finditer(r'\d+万', text_input):
+            man_issues.append(f"「{match.group()}」は漢数字での表記（例：十万）が望ましいです。")
+
+        if digit_issues or man_issues:
+    st.markdown("### ⚠️ 数字表記ルールの指摘")
+    for issue in digit_issues + man_issues:
+        st.warning(issue)
+
+
+
         for wrong, correct in conversion_list:
             if wrong in text_input:
                 hits.append((wrong, correct))
