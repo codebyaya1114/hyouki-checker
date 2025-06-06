@@ -62,6 +62,21 @@ if st.button("チェック"):
         digit_issues = []
         man_digit_issues = []
 
+        digit_issues = []
+man_digit_issues = []
+
+# ⬇ ここから追加！OK！
+wrong_big_numbers = []
+for match in re.finditer(r'\d{5,}', text_input):
+    num = match.group()
+    wrong_big_numbers.append(f"「{num}」は万以上なので、漢数字をつけた表記（例：十六万8000円）が望ましいです。")
+
+if wrong_big_numbers:
+    st.markdown("### ⚠️ 万以上の数字表記ルール")
+    for msg in wrong_big_numbers:
+        st.warning(msg)
+
+
         # 1桁は全角、2桁以上は半角
         for match in re.finditer(r'\d+', text_input):
             num = match.group()
