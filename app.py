@@ -63,7 +63,8 @@ if st.button("チェック"):
         # 万以上の数字に漢数字チェック
         man_issues = []
         for match in re.finditer(r'\d+万', text_input):
-            man_issues.append(f"「{match.group()}」は漢数字での表記（例：十万）が望ましいです。")
+            man_issues.append(f"{match.group(0)}は漢数字での表記（例：十二万）が望ましいです。")
+
 
         if digit_issues or man_issues:
             st.markdown("### ⚠️ 数字表記ルールの指摘")
