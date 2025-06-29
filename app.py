@@ -59,8 +59,8 @@ if st.button("チェック"):
             st.success("表記ゆれは見つかりませんでした！")
 
 
-        if digit_issues:
-    st.markdown("#### 🔢 数字表記ルール違反")
+if digit_issues:
+    st.markdown("#### 🧮 数字表記ルール違反")
     for msg in digit_issues:
         st.warning(msg)
 
