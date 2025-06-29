@@ -68,7 +68,7 @@ def zenkaku_to_hankaku(s):
     z2h = str.maketrans("０１２３４５６７８９", "0123456789")
     return s.translate(z2h)
 
-テキスト入力 = zenkaku_to_hankaku(テキスト入力)
+text_input = zenkaku_to_hankaku(text_input)
 
 wrong_big_numbers = []
 for match in re.finditer(r'\d{5,}', text_input):
