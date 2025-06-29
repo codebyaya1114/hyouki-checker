@@ -48,19 +48,36 @@ if st.button("チェック"):
                 hits.append((wrong, correct))
                 highlighted = re.sub(f"({re.escape(wrong)})", r"<mark>\1</mark>", highlighted)
 
-        st.markdown("### 🔍 ハイライト結果")
+        st.markdown("#### 🔍 ハイライト結果")
         st.markdown(highlighted, unsafe_allow_html=True)
 
         if hits:
-            st.markdown("### ✅ 該当表記一覧")
+            st.markdown("#### ✅ 該当表記一覧")
             df = pd.DataFrame(hits, columns=["間違い", "正しい表記"])
             st.dataframe(df, use_container_width=True)
         else:
             st.success("表記ゆれは見つかりませんでした！")
 
+
+        if digit_issues:
+    st.markdown("#### 🔢 数字表記ルール違反")
+    for msg in digit_issues:
+        st.warning(msg)
+
+
         # 数字ルールチェック
         digit_issues = []
         man_digit_issues = []
+
+# 1桁は全角、2桁以上は半角チェック
+for match in re.finditer(r'[0-9０-９]+', text_input):
+    num = match.group()
+    if len(num) == 1:
+        if num.isascii():  # 半角1桁はNG
+            digit_issues.append(f"{num} は1桁なので全角が望ましいです。")
+    elif len(num) >= 2:
+        if not num.isascii():  # 全角2桁以上はNG
+            digit_issues.append(f"{num} は2桁以上なので半角が望ましいです。")
 
 
 # ⬇ ここから追加！OK！
