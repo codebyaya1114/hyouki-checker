@@ -64,6 +64,12 @@ if st.button("チェック"):
 
 
 # ⬇ ここから追加！OK！
+def zenkaku_to_hankaku(s):
+    z2h = str.maketrans("０１２３４５６７８９", "0123456789")
+    return s.translate(z2h)
+
+テキスト入力 = zenkaku_to_hankaku(テキスト入力)
+
 wrong_big_numbers = []
 for match in re.finditer(r'\d{5,}', text_input):
     num = match.group()
