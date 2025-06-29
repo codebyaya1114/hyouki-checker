@@ -60,15 +60,23 @@ if st.button("チェック"):
 
 
 
-        # 数字ルールチェック
-        digit_issues = []
-        man_digit_issues = []
-        
+# ===== 数字ルールチェックと表示 =====
+digit_issues = []
+
+for match in re.finditer(r'[０-９0-9]+', text_input):
+    num = match.group()
+    if len(num) == 1:
+        if num.isascii():
+            digit_issues.append(f"「{num}」は1桁なので全角が望ましいです。")
+    elif len(num) >= 2:
+        if not num.isascii():
+            digit_issues.append(f"「{num}」は2桁以上なので半角が望ましいです。")
 
 if digit_issues:
     st.markdown("#### 🧮 数字表記ルール違反")
     for msg in digit_issues:
         st.warning(msg)
+
 
 
 
