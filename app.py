@@ -59,15 +59,19 @@ if st.button("チェック"):
             st.success("表記ゆれは見つかりませんでした！")
 
 
+
+        # 数字ルールチェック
+        digit_issues = []
+        man_digit_issues = []
+        
+
 if digit_issues:
     st.markdown("#### 🧮 数字表記ルール違反")
     for msg in digit_issues:
         st.warning(msg)
 
 
-        # 数字ルールチェック
-        digit_issues = []
-        man_digit_issues = []
+
 
 # 1桁は全角、2桁以上は半角チェック
 for match in re.finditer(r'[0-9０-９]+', text_input):
